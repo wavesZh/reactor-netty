@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2019 Pivotal Software Inc, All Rights Reserved.
+ * Copyright (c) 2011-Present Pivotal Software Inc, All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
-import io.netty.util.NetUtil;
 import reactor.core.Disposable;
 import reactor.core.publisher.Mono;
 import reactor.core.publisher.MonoSink;
@@ -88,7 +87,9 @@ final class TcpServerBind extends TcpServer {
 
 			DisposableBind disposableServer = new DisposableBind(sink, f, obs, bootstrap);
 			f.addListener(disposableServer);
-			sink.onCancel(disposableServer);
+			if (!f.isDone()) {
+				sink.onCancel(disposableServer);
+			}
 		});
 	}
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2011-2019 Pivotal Software Inc, All Rights Reserved.
+ * Copyright (c) 2011-Present Pivotal Software Inc, All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -208,7 +208,9 @@ final class PooledConnectionProvider implements ConnectionProvider {
 				new DisposableAcquire(sink, f, pool, obs);
 		// Returned value is deliberately ignored
 		f.addListener(disposableAcquire);
-		sink.onCancel(disposableAcquire);
+		if (!f.isDone()) {
+			sink.onCancel(disposableAcquire);
+		}
 	}
 
 	static final Logger log = Loggers.getLogger(PooledConnectionProvider.class);

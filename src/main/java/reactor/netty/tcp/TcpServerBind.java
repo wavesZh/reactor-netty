@@ -88,7 +88,11 @@ final class TcpServerBind extends TcpServer {
 			DisposableBind disposableServer = new DisposableBind(sink, f, obs, bootstrap);
 			f.addListener(disposableServer);
 			if (!f.isDone()) {
-				sink.onCancel(disposableServer);
+				sink.onCancel(() -> {
+					if (!f.isDone()) {
+						disposableServer.dispose();
+					}
+				});
 			}
 		});
 	}
